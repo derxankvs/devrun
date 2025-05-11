@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    --sidebar-background: 240 4.8% 95.9%; /* Light sidebar background */
+    --sidebar-foreground: 240 5.9% 10%; /* Dark text for light sidebar */
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 90%; /* Slightly darker accent for light sidebar */
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 240 5.9% 85%;
+    --sidebar-ring: 240 5.9% 10%;
+
+    --syntax-keyword: 210 70% 55%;
+    --syntax-string: 100 50% 50%;
+    --syntax-comment: 0 0% 40%;
+    --syntax-number: 30 80% 50%;
+    --syntax-function: 280 60% 60%;
+    --syntax-tag: 0 60% 50%;
+  }
+
+  .dark {
+    --background: 0 0% 11.8%; /* #1E1E1E */
+    --foreground: 0 0% 98%; /* White text */
+
+    --card: 0 0% 10%; /* Slightly darker than background for depth */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%; /* Even darker for popovers */
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 210 60% 50%; /* A vibrant blue for primary actions */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
+
+    --secondary: 0 0% 20%; /* Darker gray for secondary elements */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%; /* Lighter muted text */
+
+    --accent: 180 50% 50%; /* A teal/cyan for accent */
+    --accent-foreground: 0 0% 100%; /* White text on accent */
+
+    --destructive: 0 70% 55%; /* A clear red for destructive actions */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 25%; /* Visible borders */
+    --input: 0 0% 15%; /* Dark input backgrounds */
+    --ring: 210 60% 55%; /* Ring color for focus, related to primary */
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 8%; /* Darker than main bg for sidebar */
+    --sidebar-foreground: 0 0% 85%; /* Slightly dimmed text */
+    --sidebar-primary: 210 60% 50%; /* same as primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%; /* Hover/active state in sidebar */
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 210 60% 55%; /* same as ring */
+
+    /* Syntax highlighting (basic) */
+    --syntax-keyword: hsl(210 70% 65%); /* Brighter blue for keywords */
+    --syntax-string: hsl(100 50% 60%); /* Green for strings */
+    --syntax-comment: hsl(0 0% 50%);   /* Gray for comments */
+    --syntax-number: hsl(30 80% 60%);  /* Orange for numbers */
+    --syntax-function: hsl(280 60% 70%); /* Purple for functions */
+    --syntax-tag: hsl(0 60% 60%);      /* Reddish for HTML/XML tags */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-mono;
+    font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures */
+  }
+  /* Basic syntax highlighting styles for pre > code blocks */
+  pre[class*="language-"] {
+    @apply p-4 rounded-md overflow-auto bg-muted text-sm;
+  }
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: hsl(var(--syntax-comment));
+  }
+  .token.punctuation {
+    color: hsl(var(--foreground) / 0.7);
+  }
+  .token.property,
+  .token.tag,
+  .token.boolean,
+  .token.number,
+  .token.constant,
+  .token.symbol,
+  .token.deleted {
+    color: hsl(var(--syntax-number));
+  }
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin,
+  .token.inserted {
+    color: hsl(var(--syntax-string));
+  }
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    color: hsl(var(--syntax-function));
+  }
+  .token.atrule,
+  .token.attr-value,
+  .token.keyword {
+    color: hsl(var(--syntax-keyword));
+  }
+  .token.function,
+  .token.class-name {
+    color: hsl(var(--syntax-function));
+  }
+  .token.regex,
+  .token.important,
+  .token.variable {
+    color: hsl(var(--syntax-tag)); /* Using tag color for variables for now */
+  }
+}
