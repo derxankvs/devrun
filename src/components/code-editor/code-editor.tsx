@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Card, CardContent, CardHeader, CardTitle, CardFooter
 } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import {
   Loader2, AlertTriangle, CheckCircle
 } from "lucide-react";
@@ -18,16 +18,8 @@ interface CodeEditorProps {
   onFileContentChange: (path: string, newContent: string) => void;
 }
 
-function debounce<T extends (...args: any[]) => void>(func: T, delay: number) {
-  let timeoutId: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-  };
-}
-
 export function CodeEditor({ selectedFile, onFileContentChange }: CodeEditorProps) {
-  const [code, setCode] = useState<string>("");
+  const [code, setCode] = useState("");
   const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
   const [isLoadingBugs, setIsLoadingBugs] = useState(false);
   const [bugReport, setBugReport] = useState<{ bugs: string[]; fixes: string[] } | null>(null);
@@ -35,32 +27,38 @@ export function CodeEditor({ selectedFile, onFileContentChange }: CodeEditorProp
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (selectedFile) {
-      setCode(selectedFile.content || "");
-      const extension = selectedFile.name.split(".").pop()?.toLowerCase();
-      const lang = EDITOR_LANGUAGES.find(
-        (l) => l.value === extension ||
-          (extension === "js" && l.value === "javascript") ||
-          (extension === "py" && l.value === "python") ||
-          (extension === "ts" && l.value === "typescript") ||
-          (extension === "md" && l.value === "markdown")
-      );
-      setLanguage((lang?.value as Language) || DEFAULT_LANGUAGE);
-      setBugReport(null);
-    } else {
+    if (!selectedFile) {
       setCode("");
+      return;
     }
+
+    setCode(selectedFile.content || "");
+
+    const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+    const matchedLanguage = EDITOR_LANGUAGES.find(
+      (l) =>
+        l.value === extension ||
+        (extension === "js" && l.value === "javascript") ||
+        (extension === "ts" && l.value === "typescript") ||
+        (extension === "py" && l.value === "python") ||
+        (extension === "md" && l.value === "markdown")
+    );
+
+    setLanguage((matchedLanguage?.value as Language) || DEFAULT_LANGUAGE);
+    setBugReport(null);
   }, [selectedFile]);
 
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
-    if (selectedFile) onFileContentChange(selectedFile.path, newCode);
+    if (selectedFile) {
+      onFileContentChange(selectedFile.path, newCode);
+    }
   };
 
-  const handleDetectBugs = async () => {
+  const handleDetectBugs = () => {
     if (!code.trim() || !language) {
       toast({
-        title: "Não é Possível Detectar Bugs",
+        title: "Não é possível detectar bugs",
         description: "Nenhum código ou linguagem selecionada.",
         variant: "destructive",
       });
@@ -70,13 +68,12 @@ export function CodeEditor({ selectedFile, onFileContentChange }: CodeEditorProp
     setIsLoadingBugs(true);
     setBugReport(null);
 
-    // Simulação de detecção de bugs, remove o uso de IA
+    // Simulação de detecção de bugs
     setTimeout(() => {
       setBugReport({
         bugs: ["Bug de exemplo encontrado!"],
         fixes: ["Exemplo de correção sugerida."]
       });
-
       setIsLoadingBugs(false);
     }, 2000);
   };
@@ -95,22 +92,20 @@ export function CodeEditor({ selectedFile, onFileContentChange }: CodeEditorProp
         <CardTitle className="text-lg font-medium truncate" title={selectedFile.name}>
           {selectedFile.name}
         </CardTitle>
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={handleDetectBugs}
-            variant="outline"
-            size="sm"
-            disabled={isLoadingBugs}
-            className="h-8 text-xs"
-          >
-            {isLoadingBugs ? (
-              <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-            ) : (
-              <AlertTriangle className="mr-2 h-3 w-3" />
-            )}
-            Detectar Bugs
-          </Button>
-        </div>
+        <Button
+          onClick={handleDetectBugs}
+          variant="outline"
+          size="sm"
+          disabled={isLoadingBugs}
+          className="h-8 text-xs"
+        >
+          {isLoadingBugs ? (
+            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+          ) : (
+            <AlertTriangle className="mr-2 h-3 w-3" />
+          )}
+          Detectar Bugs
+        </Button>
       </CardHeader>
 
       <CardContent className="p-0 flex-grow flex flex-col overflow-hidden">
@@ -129,30 +124,28 @@ export function CodeEditor({ selectedFile, onFileContentChange }: CodeEditorProp
       {bugReport && (
         <CardFooter className="p-4 border-t flex-col items-start gap-2 max-h-48 overflow-y-auto bg-muted/30">
           <h4 className="text-sm font-semibold">Relatório de Bugs:</h4>
-          {bugReport.bugs.length > 0 ? (
-            <>
-              <div className="text-xs">
-                <strong>Bugs:</strong>
-                <ul className="list-disc pl-5">
-                  {bugReport.bugs.map((bug, i) => (
-                    <li key={`bug-${i}`}>{bug}</li>
-                  ))}
-                </ul>
-              </div>
-              {bugReport.fixes.length > 0 && (
-                <div className="text-xs mt-2">
-                  <strong>Correções Sugeridas:</strong>
-                  <ul className="list-disc pl-5">
-                    {bugReport.fixes.map((fix, i) => (
-                      <li key={`fix-${i}`}>{fix}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </>
-          ) : (
+          <div className="text-xs">
+            <strong>Bugs:</strong>
+            <ul className="list-disc pl-5">
+              {bugReport.bugs.map((bug, i) => (
+                <li key={`bug-${i}`}>{bug}</li>
+              ))}
+            </ul>
+          </div>
+          {bugReport.fixes.length > 0 && (
+            <div className="text-xs mt-2">
+              <strong>Correções Sugeridas:</strong>
+              <ul className="list-disc pl-5">
+                {bugReport.fixes.map((fix, i) => (
+                  <li key={`fix-${i}`}>{fix}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {bugReport.bugs.length === 0 && (
             <p className="text-xs text-green-500 flex items-center">
-              <CheckCircle className="mr-2 h-4 w-4" /> Nenhum bug em potencial encontrado.
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Nenhum bug em potencial encontrado.
             </p>
           )}
         </CardFooter>
